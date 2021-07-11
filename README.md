@@ -1,27 +1,123 @@
-# AngularTodoList
+# Todo example using Supabase & Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.1.
+- Frontend:
+  - [Angular](https://angular.io)
+  - [Supabase.js](https://supabase.io/docs/library/getting-started) for user management and realtime data syncing.
+- Backend:
+  - [app.supabase.io](https://app.supabase.io/): hosted Postgres database with restful API for usage with Supabase.js.
 
-## Development server
+## Deploy your own
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### 1. Create new project
 
-## Code scaffolding
+Sign up to Supabase - [https://app.supabase.io](https://app.supabase.io) and create a new project. Wait for your database to start.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### 2. Run "Todo List" Quickstart
 
-## Build
+Once your database has started, run the "Todo List" quickstart. Inside of your project, enter the `SQL editor` tab and scroll down until you see `TODO LIST: Build a basic todo list with Row Level Security`.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### 3. Get the URL and Key
 
-## Running unit tests
+Go to the Project Settings (the cog icon), open the API tab, and find your API URL and `anon` key, you'll need these in the next step.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+The `anon` key is your client-side API key. It allows "anonymous access" to your database, until the user has logged in. Once they have logged in, the keys will switch to the user's own login token. This enables row level security for your data. Read more about this [below](#postgres-row-level-security).
 
-## Running end-to-end tests
+![image](https://user-images.githubusercontent.com/10214025/88916245-528c2680-d298-11ea-8a71-708f93e1ce4f.png)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+**_NOTE_**: The `service_role` key has full access to your data, bypassing any security policies. These keys have to be kept secret and are meant to be used in server environments and never on a client or browser.
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### 4. Run the Angular client locally
+
+Copy the url and the key retrieved into the previous step into the `supabase.service.ts` file :
+
+```ts
+SUPABASE_URL = process?.env?.ANGULAR_APP_SUPABASE_URL as string ?? "YOUR_SUPABASE_URL";
+SUPABASE_KEY = process?.env?.ANGULAR_APP_SUPABASE_KEY as string ?? "YOUR_SUPABASE_KEY";
+```
+
+run `ng serve`;
+
+### 4. Deploy the Angular client
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/angular-supa/supabase-angular-todo-list/tree/main&env=ANGULAR_APP_SUPABASE_URL,ANGULAR_APP_SUPABASE_KEY&envDescription=Find%20the%20Supabase%20URL%20and%20key%20in%20the%20your%20auto-generated%20docs%20at%20app.supabase.io&project-name=supabase-todo-list&repo-name=supabase-todo-list)
+
+Here, we recommend forking this repo so you can deploy through Vercel by clicking the button above. When you click the button, replace the repo URL with your fork's URL.
+
+You will be asked for a `ANGULAR_APP_SUPABASE_URL` and `ANGULAR_APP_SUPABASE_KEY`. Use the API URL and `anon` key from [step 3](#3.-get-the-url-and-key).
+
+### 5. Change authentication settings if necessary
+
+![Change auth settings](https://user-images.githubusercontent.com/1811651/101840012-39be3800-3af8-11eb-8c32-73f2fae6299e.png)
+
+On [app.supabase.io](https://app.supabase.io), you can go to Authentication -> Settings to change your auth settings for your project if necessary. Here, you can change the site URL, which is used for determining where to redirect users after they confirm their email addresses or attempt to use a magic link to log in.
+
+Here, you can also enable external oauth providers, such as Google and GitHub.
+
+Instructions to activate Google provider : https://supabase.io/docs/guides/auth/auth-google
+Instructions to activate Github provider : https://supabase.io/docs/guides/auth/auth-github
+
+## Supabase details
+
+### Postgres Row level security
+
+This project uses very high-level Authorization using Postgres' Role Level Security.
+When you start a Postgres database on Supabase, we populate it with an `auth` schema, and some helper functions.
+When a user logs in, they are issued a JWT with the role `authenticated` and their UUID.
+We can use these details to provide fine-grained control over what each user can and cannot do.
+
+This is a trimmed-down schema, with the policies:
+
+```sql
+create table todos (
+  id bigint generated by default as identity primary key,
+  user_id uuid references auth.users not null,
+  task text check (char_length(task) > 3),
+  is_complete boolean default false,
+  inserted_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table todos enable row level security;
+
+create policy "Individuals can create todos." on todos for
+    insert with check (auth.uid() = user_id);
+
+create policy "Individuals can view their own todos. " on todos for
+    select using (auth.uid() = user_id);
+
+create policy "Individuals can update their own todos." on todos for
+    update using (auth.uid() = user_id);
+
+create policy "Individuals can delete their own todos." on todos for
+    delete using (auth.uid() = user_id);
+```
+
+## Authors
+
+- [Gerome Grignon](https://github.com/geromegrignon)
+
+Supabase is open source, we'd love for you to follow along and get involved at https://github.com/supabase/supabase
+
+## Local development
+
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+
+```
+npm run build
+```
+
+### Lints and fixes files
+
+```
+npm run lint
+```
