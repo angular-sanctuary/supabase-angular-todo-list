@@ -8,6 +8,7 @@ import {
   SupabaseClient,
   User
 } from '@supabase/supabase-js';
+import {environment} from "../../environments/environment";
 
 interface SignInResponse {
   session: Session | null;
@@ -31,12 +32,8 @@ interface SignUpResponse {
 export class SupabaseService {
   private supabaseClient: SupabaseClient;
   token: string | undefined;
-
-  SUPABASE_URL = window.process?.env?.ANGULAR_APP_SUPABASE_URL as string ?? "YOUR_SUPABASE_URL";
-  SUPABASE_KEY = window.process?.env?.ANGULAR_APP_SUPABASE_KEY as string ?? "YOUR_SUPABASE_KEY";
-
   constructor() {
-    this.supabaseClient = createClient(this.SUPABASE_URL, this.SUPABASE_KEY);
+    this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
   }
 
   getSession(): Session | null {
