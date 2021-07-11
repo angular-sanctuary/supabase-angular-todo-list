@@ -29,16 +29,19 @@ The `anon` key is your client-side API key. It allows "anonymous access" to your
 
 ### 4. Run the Angular client locally
 
-Copy the url and the key retrieved into the previous step into the `supabase.service.ts` file :
+Copy the url and the key retrieved into the previous step into the `environment.ts` file :
 
 ```ts
-SUPABASE_URL = process?.env?.ANGULAR_APP_SUPABASE_URL as string ?? "YOUR_SUPABASE_URL";
-SUPABASE_KEY = process?.env?.ANGULAR_APP_SUPABASE_KEY as string ?? "YOUR_SUPABASE_KEY";
+export const environment = {
+  production: false,
+  supabaseUrl: 'YOUR_SUPABASE_URL',
+  supabaseKey: 'YOUR_SUPABASE_KEY',
+};
 ```
 
 run `ng serve`;
 
-### 4. Deploy the Angular client
+### 5. Deploy the Angular client
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/angular-supa/supabase-angular-todo-list/tree/main&env=ANGULAR_APP_SUPABASE_URL,ANGULAR_APP_SUPABASE_KEY&envDescription=Find%20the%20Supabase%20URL%20and%20key%20in%20the%20your%20auto-generated%20docs%20at%20app.supabase.io&project-name=supabase-todo-list&repo-name=supabase-todo-list)
 
@@ -46,7 +49,7 @@ Here, we recommend forking this repo so you can deploy through Vercel by clickin
 
 You will be asked for a `ANGULAR_APP_SUPABASE_URL` and `ANGULAR_APP_SUPABASE_KEY`. Use the API URL and `anon` key from [step 3](#3.-get-the-url-and-key).
 
-### 5. Change authentication settings if necessary
+### 6. Change authentication settings if necessary
 
 ![Change auth settings](https://user-images.githubusercontent.com/1811651/101840012-39be3800-3af8-11eb-8c32-73f2fae6299e.png)
 
@@ -94,6 +97,7 @@ create policy "Individuals can delete their own todos." on todos for
 
 ## Authors
 
+- [Supabase](https://supabase.io)
 - [Gerome Grignon](https://github.com/geromegrignon)
 
 Supabase is open source, we'd love for you to follow along and get involved at https://github.com/supabase/supabase
@@ -114,10 +118,4 @@ npm run serve
 
 ```
 npm run build
-```
-
-### Lints and fixes files
-
-```
-npm run lint
 ```
