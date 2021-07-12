@@ -39,7 +39,7 @@ export const environment = {
 };
 ```
 
-run `ng serve`;
+run `ng serve`
 
 ### 5. Deploy the Angular client
 
