@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
     if (error) {
       console.error("error", error.message);
     } else {
-      this.todos = todos;
+      this.todos = todos ?? [];
     }
   }
 

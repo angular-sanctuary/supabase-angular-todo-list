@@ -17,8 +17,8 @@ const routes: Routes = [
     component: AuthComponent
   },
   {
-    path:'recovery-password',
-    component:RecoveryPasswordComponent
+    path: 'recovery-password',
+    component: RecoveryPasswordComponent
   }
 ];
 

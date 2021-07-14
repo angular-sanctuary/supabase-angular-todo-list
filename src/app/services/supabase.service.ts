@@ -4,27 +4,9 @@ import {
   createClient,
   Provider,
   Session,
-  Subscription,
-  SupabaseClient,
-  User
+  SupabaseClient
 } from '@supabase/supabase-js';
 import {environment} from "../../environments/environment";
-
-interface SignInResponse {
-  session: Session | null;
-  user: User | null;
-  provider?: Provider;
-  url?: string | null;
-  error: Error | null;
-  data: Session | null;
-}
-
-interface SignUpResponse {
-  user: User | null;
-  session: Session | null;
-  error: Error | null;
-  data: Session | User | null;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +14,7 @@ interface SignUpResponse {
 export class SupabaseService {
   private supabaseClient: SupabaseClient;
   token: string | undefined;
+
   constructor() {
     this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
   }
@@ -40,46 +23,44 @@ export class SupabaseService {
     return this.supabaseClient.auth.session();
   }
 
-  async signUp(email: string, password: string): Promise<SignUpResponse> {
+  signUp(email: string, password: string) {
     return this.supabaseClient.auth.signUp({email, password});
   }
 
-  async signIn(email: string, password: string): Promise<SignInResponse> {
+  signIn(email: string, password: string) {
     return this.supabaseClient.auth.signIn({email, password});
   }
 
-  async signInWithProvider(provider: Provider): Promise<SignInResponse> {
+  signInWithProvider(provider: Provider) {
     return this.supabaseClient.auth.signIn({provider});
   }
 
-  signOut(): void {
+  signOut() {
     this.supabaseClient.auth.signOut().catch(console.error);
   }
 
-  authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void): { data: Subscription | null; error: Error | null; } {
+  authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     return this.supabaseClient.auth.onAuthStateChange(callback);
   }
 
-  async resetPassword(email: string): Promise<{ data: {} | null; error: Error | null }> {
+  resetPassword(email: string) {
     return this.supabaseClient.auth.api.resetPasswordForEmail(email);
   }
 
-  async handleNewPassword(newPassword: string): Promise<{ user: User | null; data: User | null; error: Error | null }> {
+  handleNewPassword(newPassword: string) {
     return this.supabaseClient.auth.api.updateUser(this.token as string, {
       password: newPassword,
     });
   }
 
-  // some types aren't exposed at this time
-  async fetchTodos(): Promise<any> {
+  fetchTodos() {
     return this.supabaseClient
       .from("todos")
       .select("*")
       .order("id", {ascending: false});
   }
 
-  // some types aren't exposed at this time
-  async addTodo(task: string): Promise<any> {
+  addTodo(task: string) {
     const userId = this.getSession()?.user?.id as string;
     return this.supabaseClient
       .from("todos")
@@ -87,8 +68,7 @@ export class SupabaseService {
       .single();
   }
 
-  // some types aren't exposed at this time
-  async toggleComplete(id: string, isCompleted: boolean): Promise<any> {
+  toggleComplete(id: string, isCompleted: boolean) {
     return this.supabaseClient
       .from("todos")
       .update({is_complete: !isCompleted})
@@ -96,8 +76,7 @@ export class SupabaseService {
       .single();
   }
 
-  // some types aren't exposed at this time
-  async deleteTodo(id: string): Promise<any> {
+  deleteTodo(id: string) {
     return this.supabaseClient.from("todos").delete().eq("id", id);
   }
 }
