@@ -6,18 +6,11 @@
       type="checkbox"
       [checked]="todo?.is_complete"
     />
-    <span
-      [ngClass]="{'line-through': todo?.is_complete}"
-      class="w-full flex-grow"
-    >
-{{todo?.task}}
+    <span [ngClass]="{ 'line-through': todo?.is_complete }" class="w-full flex-grow">
+      {{ todo?.task }}
     </span>
   </span>
-  <button
-    type="button"
-    class="font-mono text-red-500 text-xl border px-2"
-    (click)="delete.emit()"
-  >
+  <button type="button" class="font-mono text-red-500 text-xl border px-2" (click)="delete.emit()">
     X
   </button>
 </div>

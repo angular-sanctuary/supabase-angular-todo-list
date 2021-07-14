@@ -26,7 +26,6 @@ The `anon` key is your client-side API key. It allows "anonymous access" to your
 
 **_NOTE_**: The `service_role` key has full access to your data, bypassing any security policies. These keys have to be kept secret and are meant to be used in server environments and never on a client or browser.
 
-
 ### 4. Run the Angular client locally
 
 Copy the url and the key retrieved into the previous step into the `environment.ts` file :
@@ -36,7 +35,7 @@ export const environment = {
   production: false,
   supabaseUrl: 'YOUR_SUPABASE_URL',
   supabaseKey: 'YOUR_SUPABASE_KEY',
-};
+}
 ```
 
 run `ng serve`
