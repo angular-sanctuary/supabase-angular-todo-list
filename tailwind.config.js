@@ -1,4 +1,4 @@
-const { guessProductionMode } = require('@ngneat/tailwind')
+const { guessProductionMode } = require('@ngneat/tailwind');
 
 module.exports = {
   prefix: '',
@@ -14,4 +14,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};
