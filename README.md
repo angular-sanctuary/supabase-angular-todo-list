@@ -1,5 +1,7 @@
 # Todo example using Supabase & Angular
 
+> The first version of this project is now part of the [Supabase repo](https://github.com/supabase/supabase/tree/master/examples/angular-todo-list).
+
 - Frontend:
   - [Angular](https://angular.io)
   - [Supabase.js](https://supabase.io/docs/library/getting-started) for user management and realtime data syncing.
